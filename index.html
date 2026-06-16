@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityMind — Urban Intelligence System</title>
+    <meta name="description" content="AI-powered urban intelligence system with CSP, Genetic Algorithms, A* Search, K-Means Clustering, and Decision Tree classification.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- ── Top Navigation Bar ───────────────────────────────────────── -->
+    <header id="top-bar">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <rect x="2" y="8" width="8" height="18" rx="1.5" fill="#6BDFFF"/>
+                    <rect x="12" y="3" width="8" height="23" rx="1.5" fill="#A78BFA"/>
+                    <rect x="22" y="12" width="4" height="14" rx="1" fill="#34D399"/>
+                    <circle cx="6" cy="5" r="3" fill="#FBBF24"/>
+                </svg>
+            </div>
+            <div>
+                <h1>CityMind</h1>
+                <span class="subtitle">Urban Intelligence System</span>
+            </div>
+        </div>
+        <div class="status-section">
+            <div class="status-chip" id="status-chip">
+                <span class="status-dot"></span>
+                <span id="status-text">Idle</span>
+            </div>
+            <div class="step-counter">
+                Step <span id="step-current">0</span> / <span id="step-total">20</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main Layout ──────────────────────────────────────────────── -->
+    <main id="app-main">
+        <!-- Left Panel: Controls -->
+        <aside id="left-panel" class="glass-panel">
+            <section class="panel-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+                    Simulation Control
+                </h2>
+                <div class="btn-group">
+                    <button id="btn-initialize" class="btn btn-primary" onclick="initializeSimulation()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                        Initialize City
+                    </button>
+                    <button id="btn-step" class="btn btn-accent" onclick="simulationStep()" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Next Step
+                    </button>
+                    <button id="btn-run-all" class="btn btn-success" onclick="runAll()" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/><line x1="19" y1="3" x2="19" y2="21"/></svg>
+                        Run All Steps
+                    </button>
+                    <button id="btn-reset" class="btn btn-danger" onclick="resetSimulation()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        Reset
+                    </button>
+                </div>
+            </section>
+
+            <section class="panel-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    View Overlays
+                </h2>
+                <div class="toggle-group">
+                    <label class="toggle-item">
+                        <input type="checkbox" id="toggle-roads" checked onchange="renderGrid()">
+                        <span class="toggle-slider roads"></span>
+                        <span>Road Network</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="toggle-ambulances" checked onchange="renderGrid()">
+                        <span class="toggle-slider ambulances"></span>
+                        <span>Ambulance Coverage</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="toggle-heatmap" onchange="renderGrid()">
+                        <span class="toggle-slider heatmap"></span>
+                        <span>Crime Risk Heatmap</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="toggle-civilians" checked onchange="renderGrid()">
+                        <span class="toggle-slider civilians"></span>
+                        <span>Civilians & Route</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="toggle-police" checked onchange="renderGrid()">
+                        <span class="toggle-slider police"></span>
+                        <span>Police Coverage</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="panel-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Legend
+                </h2>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="legend-color" style="background:#4A9EFF"></span>Residential</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#FF6B6B"></span>Hospital</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#FBBF24"></span>School</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#8B8B9E"></span>Industrial</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#FF8C42"></span>Power Plant</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#34D399"></span>Ambulance Depot</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#E879F9"></span>Ambulance</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#3B82F6"></span>Police</div>
+                    <div class="legend-item"><span class="legend-color" style="background:#F43F5E"></span>Civilian</div>
+                </div>
+            </section>
+
+            <!-- Live Modification Challenge -->
+            <section class="panel-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Live Modification
+                </h2>
+                <div class="modify-group">
+                    <label class="modify-label">Hospital Hops (C2)</label>
+                    <div class="modify-row">
+                        <input type="number" id="input-hospital-hops" value="3" min="1" max="10" class="modify-input">
+                        <button class="btn btn-small btn-accent" onclick="modifyConstraint('hospital_hops', document.getElementById('input-hospital-hops').value)">Apply</button>
+                    </div>
+                </div>
+                <div class="modify-group">
+                    <label class="modify-label">PowerPlant Hops (C3)</label>
+                    <div class="modify-row">
+                        <input type="number" id="input-powerplant-hops" value="2" min="1" max="10" class="modify-input">
+                        <button class="btn btn-small btn-accent" onclick="modifyConstraint('powerplant_hops', document.getElementById('input-powerplant-hops').value)">Apply</button>
+                    </div>
+                </div>
+                <div class="modify-group">
+                    <label class="modify-label">Ambulance Count</label>
+                    <div class="modify-row">
+                        <input type="number" id="input-ambulances" value="3" min="1" max="10" class="modify-input">
+                        <button class="btn btn-small btn-accent" onclick="modifyConstraint('num_ambulances', document.getElementById('input-ambulances').value)">Apply</button>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Center: City Grid Canvas -->
+        <section id="center-panel">
+            <div class="canvas-container glass-panel">
+                <canvas id="city-canvas" width="640" height="640"></canvas>
+                <div id="canvas-tooltip" class="tooltip"></div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div id="stats-bar">
+                <div class="stat-card glass-panel">
+                    <div class="stat-value" id="stat-roads">—</div>
+                    <div class="stat-label">Roads Built</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-value" id="stat-cost">—</div>
+                    <div class="stat-label">Network Cost</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-value" id="stat-ambulances">—</div>
+                    <div class="stat-label">Ambulances</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-value" id="stat-rescued">—</div>
+                    <div class="stat-label">Rescued</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-value" id="stat-blocked">—</div>
+                    <div class="stat-label">Roads Blocked</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Event Log + Info -->
+        <aside id="right-panel" class="glass-panel">
+            <!-- AI Techniques Badge Bar -->
+            <section class="panel-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    AI Techniques
+                </h2>
+                <div class="technique-badges">
+                    <span class="badge badge-csp">CSP</span>
+                    <span class="badge badge-ga">Genetic Algo</span>
+                    <span class="badge badge-astar">A* Search</span>
+                    <span class="badge badge-kmeans">K-Means</span>
+                    <span class="badge badge-dt">Decision Tree</span>
+                </div>
+            </section>
+
+            <!-- Challenge Results -->
+            <section class="panel-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Challenge Results
+                </h2>
+                <div id="challenge-results" class="results-container">
+                    <div class="result-item" id="result-c1">
+                        <span class="result-badge">C1</span>
+                        <span class="result-text">Layout — waiting</span>
+                    </div>
+                    <div class="result-item" id="result-c2">
+                        <span class="result-badge">C2</span>
+                        <span class="result-text">Roads — waiting</span>
+                    </div>
+                    <div class="result-item" id="result-c3">
+                        <span class="result-badge">C3</span>
+                        <span class="result-text">Ambulances — waiting</span>
+                    </div>
+                    <div class="result-item" id="result-c4">
+                        <span class="result-badge">C4</span>
+                        <span class="result-text">Routing — waiting</span>
+                    </div>
+                    <div class="result-item" id="result-c5">
+                        <span class="result-badge">C5</span>
+                        <span class="result-text">Crime ML — waiting</span>
+                    </div>
+                    <div class="result-item" id="result-c5b">
+                        <span class="result-badge">C5b</span>
+                        <span class="result-text">Police — waiting</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Event Log -->
+            <section class="panel-section event-log-section">
+                <h2 class="section-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Live Event Log
+                </h2>
+                <div id="event-log" class="event-log"></div>
+            </section>
+        </aside>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
