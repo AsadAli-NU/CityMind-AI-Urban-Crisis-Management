@@ -115,7 +115,7 @@ The crime prediction module uses K-Means clustering and Decision Tree classifica
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/CityMind-AI-Urban-Crisis-Management.git
+git clone https://github.com/AsadAli-NU/CityMind-AI-Urban-Crisis-Management.git
 cd CityMind-AI-Urban-Crisis-Management
 ```
 
